@@ -3,7 +3,7 @@
   gather_facts: true
   become: true
   vars:
-    users:
+    sudoerlist:
     - jimjo
     - joani
     - jerry
@@ -11,8 +11,22 @@
     
 
   tasks:
+    
+  - name: Sudoers files with copy
+    copy:
+      src: '{{ item }}'
+      dest: '/etc/sudoers.d/{{ item }}'
+      owner: root
+      group: root
+      mode: 0440
+      validate: 'bash -c "cat /etc/sudoers %s | visudo -cf-"'
+    loop: '{{ sudoerlist }}'
+
+
+
   - name: Set motd using copy module
-    copy: | 
+    copy:
+      content: | 
         -------------------------------------------------
                 This system is managed by Ansible
         -------------------------------------------------
@@ -24,11 +38,10 @@
         RAM:    {{ (ansible_memtotal_mb / 1000) | round(1) }}GB
         Last ansible run: {{ ansible_date_time.iso8601 }}
         --------------------------------------------------
-    dest: /etc/motd
-    owner: root
-    group: root
-    mode: 0644
-
+      dest: /etc/motd
+      owner: root
+      group: root
+      mode: 0644
 
 
   - name: Set motd using template
