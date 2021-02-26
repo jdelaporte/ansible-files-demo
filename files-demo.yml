@@ -9,19 +9,17 @@
     - jerry
     - damien
     
-
   tasks:
     
   - name: Sudoers files with copy
     copy:
-      src: '{{ item }}'
+      src: '{{ item }}.sudoer'
       dest: '/etc/sudoers.d/{{ item }}'
       owner: root
       group: root
       mode: 0440
       validate: 'bash -c "cat /etc/sudoers %s | visudo -cf-"'
     loop: '{{ sudoerlist }}'
-
 
 
   - name: Set motd using copy module
@@ -52,7 +50,7 @@
       group: root
       mode: 0644
 
-
+  - name: Set 
 
       
   
